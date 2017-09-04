@@ -1,0 +1,10 @@
+﻿<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+    @{Html.RenderPartial("~/Views/PartView/_MetaView.cshtml"); }
+</head>
+<body>
+    @RenderBody()
+    @RenderSection("scripts", required: false)
+</body>
+</html>
