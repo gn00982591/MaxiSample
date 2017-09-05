@@ -12,3 +12,21 @@
 .hide {
     display: none;
 }
+
+.menu a, a:after {
+    text-decoration: none;
+    color: #d3d3d3;
+}
+
+    .menu a:hover {
+        color: #42a7f0;
+    }
+
+.menu .m {
+    padding-top: 10px;
+}
+
+.menu .d {
+    padding-top: 4px;
+    padding-left: 10px;
+}

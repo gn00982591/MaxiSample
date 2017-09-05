@@ -4,7 +4,27 @@
     @{Html.RenderPartial("~/Views/PartView/_MetaView.cshtml"); }
 </head>
 <body>
-    @RenderBody()
+    <table>
+        <tr>
+            <td class="menu">
+                @{
+                    foreach (var i in CsProp.Url.Where(s => s.Enable))
+                    {
+                        <div class="m">
+                            <a href='@(Url.Content($"~/{i.Controller}/{i.View}?{CsProp.QueryString._Transfer}={Server.UrlEncode(i.Name)}"))' class="fa fa-houzz">&nbsp;@(i.Name)</a>
+                        </div>
+                        foreach (var g in i.DownUrlItem.Where(s => s.Enable))
+                        {
+                            <div class="d">
+                                <a href='@(Url.Content($"~/{g.Controller}/{g.View}?{CsProp.QueryString._Transfer}={Server.UrlEncode(g.Name)}"))' class="fa fa-link">&nbsp;@(g.Name)</a>
+                            </div>
+                        }
+                    }
+                }
+            </td>
+            <td>@RenderBody()</td>
+        </tr>
+    </table>
     @{Html.RenderPartial("~/Views/PartView/_ScriptView.cshtml"); }
     @RenderSection("scripts", required: false)
 </body>
