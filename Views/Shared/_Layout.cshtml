@@ -5,6 +5,7 @@
 </head>
 <body>
     @RenderBody()
+    @{Html.RenderPartial("~/Views/PartView/_ScriptView.cshtml"); }
     @RenderSection("scripts", required: false)
 </body>
 </html>

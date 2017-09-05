@@ -1,0 +1,14 @@
+﻿body {
+    background-color: #000000;
+    font-family: Microsoft JhengHei;
+    color: #d3d3d3;
+}
+
+.lgoin i {
+    cursor: pointer;
+    font-size: 60px;
+}
+
+.hide {
+    display: none;
+}

@@ -1,4 +1,38 @@
 ﻿@{ Layout = "~/Views/Shared/_Non_ViewStart.cshtml"; }
-
-<h2>Login</h2>
-
+<div class="lgoin">
+    <i class="g-signin2 fa fa-google-plus-square" aria-hidden="true" id="btngoogle" data-onsuccess="onSignIn"></i>
+    <i class="hide fa fa-square" aria-hidden="true" id="btnway"></i>
+</div>
+<form id="frmauth" name="frmauth" method="post"></form>
+<form id="frmtoken">
+    <input type="hidden" name="id_token" id="id_token" />
+</form>
+@section scripts {
+    <script src="https://apis.google.com/js/api:client.js"></script>
+    <script>
+        $(window).on("load", function () {
+            gapi.load('auth2', function () {
+                auth2 = gapi.auth2.init({
+                    client_id: '@(CsProp.OAuth._ClientID)',
+                    cookiepolicy: 'single_host_origin'
+                });
+                auth2.attachClickHandler($("#btngoogle")[0], {},
+                    function (googleUser) {
+                        $("#id_token").val("");
+                        $("#id_token").val(googleUser.getAuthResponse().id_token);
+                        if ($("#id_token").val() != "") { $('#btnway').fadeIn(); }
+                    });
+            });
+            /*Google 登入*/
+            $("#btnway").click(function () {
+                $.post("https://www.googleapis.com/oauth2/v3/tokeninfo", $("#frmtoken").serializeobject())
+                    .done(function (q) {
+                        if ($.isEmptyObject(q)) { return; }
+                        var frmauth = $("#frmauth");
+                        for (var i in q) { frmauth.append($("<input/>", { "type": "hidden", "name": i, "value": q[i] })); }
+                        frmauth.submit();
+                    });
+            });
+        });
+    </script>
+}

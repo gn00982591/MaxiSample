@@ -2,9 +2,13 @@
 <html lang="zh-tw">
 <head>
     @{Html.RenderPartial("~/Views/PartView/_MetaView.cshtml"); }
+    <meta name="google-signin-client_id" content="@(CsProp.OAuth._ClientID)">
 </head>
 <body>
+    <h1>Moto Story</h1>
     @RenderBody()
+    <h6>&copy; Copy 2017-@(CsPublicFunc.ToTwDateTime().Year) MaximusChang</h6>
+    @{Html.RenderPartial("~/Views/PartView/_ScriptView.cshtml"); }
     @RenderSection("scripts", required: false)
 </body>
 </html>
