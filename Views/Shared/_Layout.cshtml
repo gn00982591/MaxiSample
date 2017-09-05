@@ -4,6 +4,7 @@
     @{Html.RenderPartial("~/Views/PartView/_MetaView.cshtml"); }
 </head>
 <body>
+    @{Html.RenderPartial("~/Views/PartView/_CopyRight.cshtml"); }
     <table>
         <tr>
             <td class="menu">
@@ -22,7 +23,7 @@
                     }
                 }
             </td>
-            <td>@RenderBody()</td>
+            <td class="data">@RenderBody()</td>
         </tr>
     </table>
     @{Html.RenderPartial("~/Views/PartView/_ScriptView.cshtml"); }

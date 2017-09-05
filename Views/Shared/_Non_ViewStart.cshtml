@@ -7,7 +7,7 @@
 <body>
     <h1>Moto Story</h1>
     @RenderBody()
-    <h6>&copy; Copy 2017-@(CsPublicFunc.ToTwDateTime().Year) MaximusChang</h6>
+    @{Html.RenderPartial("~/Views/PartView/_CopyRight.cshtml"); }
     @{Html.RenderPartial("~/Views/PartView/_ScriptView.cshtml"); }
     @RenderSection("scripts", required: false)
 </body>
