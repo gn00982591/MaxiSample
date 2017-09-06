@@ -1,4 +1,6 @@
-﻿var iscloseblockui = false;
+﻿var iscloseblockui = false,
+    dialogclose = null,
+    dialogclose2 = null;
 
 (function ($, undefined) {
     /*$*/
@@ -33,6 +35,7 @@
         "tonum": function (o, l) { for (var i in l) { o[l[i]] = $.multiplication(o[l[i]], 1); } return o; },
         /*物件內容轉數字加千分符*/
         "tonumonethou": function (o) {
+            if (!$.isNumeric(o)) { return ""; }
             var str = $.multiplication(o, 1).toString();
             return str.replace(/\./.test(str) ? (/(\d{1,3})(?=(\d{3})+\.)/g) : (/(\d{1,3})(?=(\d{3})+$)/g), "$1,");
         },
@@ -41,6 +44,27 @@
     });
     /*by element*/
     $.fn.extend({
+        /*dialog open*/
+        "dialogopen": function () {
+            $(this).dialog({
+                autoOpen: true, modal: true, width: "auto", open: function (event, ui) {
+                    $(".ui-widget-overlay").css({
+                        "opacity": .7,
+                        "background-color": "#000"
+                    });
+                    $(".ui-dialog-titlebar button").css({ "min-width": "10px" });
+                    var cl = $(".ui-dialog-titlebar-close span");
+                    $(".ui-dialog-titlebar-close").empty().append(cl);
+                }
+            });
+            return $(this);
+        },
+        /*dialog close*/
+        "dialogclose": function () {
+            obj = $(this);
+            try { obj.dialog("destroy"); } catch (e) { };
+            return obj;
+        },
         /*設定表單資料*/
         "setfrm": function (obj) {
             var tn = "name";
@@ -80,6 +104,86 @@
                 else if (ths.is("select")) { $(o).prop(this.name, ths.find(':selected').val()); }
             });
             return o;
+        },
+        /*table設定資料內容*/
+        /*
+        資料
+            data            [], 資料陣列
+            hide            [], 隱藏資料
+            th                [], 抬頭
+                n              string, 表格抬頭文字
+                v              string, 資料的屬性名稱
+                t               string, 資料格式，或產生形式
+                f               function,  資料格式內，對應指定產生形式而綁定執行功能
+        Ajax
+            u                   string,  網址
+            p                   object, 參數
+            d                   function, 等同 done
+        換頁
+            page            object, 換頁設定，如果是 null 表無處理
+                len            int, 每頁筆數
+                innum      int,所在頁數
+        */
+        "tabledata": function (obj) {
+            var oo = $(this);
+            oo.empty();
+            oo.addClass("tabledata");
+            /*AJAX*/
+            function tdone(d) {
+                $(obj).prop({ "data": d, "u": null });
+                tin();
+                if ($.isFunction(obj.d)) { obj.d(d); }
+            }
+            if (!$.isEmptyObject(obj.u)) {
+                if ($.isEmptyObject(obj.p)) { $.post(obj.u).done(function (d) { tdone(d); }); }
+                else { $.post(obj.u, obj.p).done(function (d) { tdone(d); }); }
+            }
+            else { tin(); }
+            /*資料構架*/
+            function tin() {
+                var tb = $("<table/>"), tr = $("<tr/>");
+                /*抬頭處理*/
+                $(obj.th).each(function (i) { tr.append("<th>" + obj.th[i].n + "</th>"); })
+                oo.append(tb.append(tr));                
+                if ($.isEmptyObject(obj.data) || obj.data.length <= 0) {
+                    /*無資料*/
+                    tb.append("<td colspan='" + obj.th.length + "' class='c red'>無資料</td>");
+                }
+                else if (!$.isEmptyObject(obj.ths)) {
+                    /*分群組*/
+                }
+                else if (!$.isEmptyObject(obj.page)) {
+                    /*分頁*/
+                }
+                else {
+                    /*一般處理*/
+                    $(obj.data).each(function (i, e) {
+                        tr = $("<tr/>");
+                        $(obj.th).each(function (ii, ee) { tr.append(settd(i, e, ii, ee, obj)); });
+                        oo.append(tb.append(tr));
+                    });
+                }
+            }
+            /*td設定*/
+            function settd(i, e, ii, ee, ext) {
+                var td = $("<td/>");
+                /*hidden 放在第一行的資料*/
+                if (ii == 0 && ext.hide.length > 0) {                    
+                    $(ext.hide).each(function (gi, ge) {
+                        td.append($("<input/>", { "value": e[ge], "type": "hidden", "name": ge }));
+                    });
+                }
+                switch (ee.t) {
+                    case "num":/*數字加入千分符*/
+                        td.css("text-align", "right").append($.tonumonethou(e[ee.v]));
+                        break;
+                    default:
+                        td.append(e[ee.v]);
+                        break;
+                }
+                if (i % 2 == 1) { td.addClass("tds"); }
+                return td;
+            }
         },
     });
 })(jQuery);

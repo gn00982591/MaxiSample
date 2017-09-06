@@ -23,9 +23,15 @@
                     }
                 }
             </td>
-            <td class="data">@RenderBody()</td>
+            <td class="data">
+                @{Html.RenderPartial("~/Views/PartView/_Title.cshtml"); }
+                <div>
+                    @RenderBody()
+                </div>
+            </td>
         </tr>
     </table>
+    <div id="dvbug"></div>
     @{Html.RenderPartial("~/Views/PartView/_ScriptView.cshtml"); }
     @RenderSection("scripts", required: false)
 </body>

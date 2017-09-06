@@ -4,6 +4,54 @@
     color: #d3d3d3;
 }
 
+table {
+    border-collapse: collapse;
+}
+
+button {
+    border: 1px solid #ffffff;
+    background-color: #000000;
+    color: #d3d3d3;
+    padding: 3px 10px;
+    cursor: pointer;
+}
+
+button:hover {
+    color: #ff9c00;
+    border-width: 2px;
+}
+
+button:active {
+    border-color: #f6ad39;
+}
+
+.tabledata {
+    padding-top: 10px;
+    padding-bottom: 20px;
+}
+
+    .tabledata th {
+        color: #000000;
+        background-color: #808080;
+    }
+
+    .tabledata th, .tabledata td {
+        padding-left: 2px;
+        padding-right: 5px;
+        border: 1px solid #f3f0f0;
+        white-space: nowrap;
+        text-align: left;
+    }
+
+    .tabledata tr:hover {
+        border-color: #f6ad39;
+        color: #f6ad39;
+    }
+
+    .tabledata .tds {
+        background-color: #4d4545;
+    }
+
 .lgoin i {
     cursor: pointer;
     font-size: 60px;
@@ -13,30 +61,48 @@
     display: none;
 }
 
-.menu a, a:after {
-    text-decoration: none;
-    color: #d3d3d3;
-    padding-right: 20px;
+.copy {
+    font-size: 10px;
+    color: #acdbfd;
 }
 
-    .menu a:hover {
-        color: #42a7f0;
+.title {
+    font-size: 25px;
+    font-weight: bolder;
+    padding-bottom: 10px;
+}
+
+.menu {
+    vertical-align: top;
+}
+
+    .menu a, a:after {
+        text-decoration: none;
+        color: #d3d3d3;
+        padding-right: 20px;
     }
 
-.menu .m {
-    padding-top: 10px;
-}
+        .menu a:hover {
+            color: #42a7f0;
+        }
 
-.menu .d {
-    padding-top: 4px;
-    padding-left: 10px;
-}
+    .menu .m {
+        padding-top: 10px;
+    }
+
+    .menu .d {
+        padding-top: 4px;
+        padding-left: 10px;
+    }
 
 .data {
     vertical-align: top;
 }
 
-.copy {
-    font-size: 10px;
-    color: #acdbfd;
+.r {
+    text-align: right;
+}
+
+.c {
+    text-align: center;
 }

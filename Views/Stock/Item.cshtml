@@ -1,0 +1,25 @@
+﻿@*個股維護*@
+<div>
+    <form id="frmsel">
+        股票：<input type="text" id="sname" name="sname" size="25" placeholder="股票名稱、代號" />
+        <button type="button" id="cbtnsel"><i class='icon fa fa-search'></i>查詢</button>
+    </form>
+</div>
+<div id="tabledata"></div>
+@section scripts {
+    <script>
+        $(window).on("load", function () {
+            $("#cbtnsel").click(function () {
+                $("#tabledata").tabledata({
+                    "u": '@Url.Content("~/Stock/Item_S")',
+                    "p": $("#frmsel").serializeobject(),
+                    "hide": ["cseq"],
+                    "th": [{ "n": "系統號", "v": "cseq" },
+                    { "n": "代號", "v": "cno" }, { "n": "名稱", "v": "cname" },
+                    { "n": "收", "v": "camount", "t": "num" }, { "n": "計息日", "v": "cinsdt" },
+                    { "n": "目標量", "v": "ctargetqty", "t": "num" }, { "n": "取價日", "v": "cpricedt" }]
+                });
+            });
+        });
+    </script>
+}
