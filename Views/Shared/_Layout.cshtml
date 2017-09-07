@@ -32,7 +32,16 @@
         </tr>
     </table>
     <div id="dvbug"></div>
+    <div id="dvdialog"></div>
     @{Html.RenderPartial("~/Views/PartView/_ScriptView.cshtml"); }
     @RenderSection("scripts", required: false)
+    <script>
+        $(window).on("load", function () {
+            /*取消enter功能*/
+            $("input").keydown(function (e) { if (e.which == 13) { e.preventDefault(); } });
+             /*form validate*/
+            $("form").validate();
+        });
+    </script>
 </body>
 </html>

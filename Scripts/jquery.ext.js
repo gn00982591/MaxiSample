@@ -1,6 +1,5 @@
-﻿var iscloseblockui = false,
-    dialogclose = null,
-    dialogclose2 = null;
+﻿var dia = null,
+    dia2 = null;
 
 (function ($, undefined) {
     /*$*/
@@ -33,17 +32,21 @@
         "tonumone": function (o) { return $.multiplication(o, 1); },
         /*物件內容轉數字*/
         "tonum": function (o, l) { for (var i in l) { o[l[i]] = $.multiplication(o[l[i]], 1); } return o; },
+        /*跳出訊息*/
+        "alert": function (str) { $("#dvdialog").html(str).dialogopen(); },
         /*物件內容轉數字加千分符*/
         "tonumonethou": function (o) {
             if (!$.isNumeric(o)) { return ""; }
             var str = $.multiplication(o, 1).toString();
             return str.replace(/\./.test(str) ? (/(\d{1,3})(?=(\d{3})+\.)/g) : (/(\d{1,3})(?=(\d{3})+$)/g), "$1,");
-        },
-        /*清除元件的val()的空白，並轉大寫*/
-        "totrimupper": function (o) { o.val($.trim(o.val()).toUpperCase()); }
+        }
     });
     /*by element*/
     $.fn.extend({
+        /*focusout英文小寫轉大寫*/
+        "focusoutupper": function () { return this.each(function () { $(this).focusout(function () { $(this).totrimupper(); }); }); },
+        /*清除元件的val()的空白，並轉大寫*/
+        "totrimupper": function () { return this.each(function () { var t = $(this); t.totrim(); t.val(t.val().toUpperCase()); }); },
         /*dialog open*/
         "dialogopen": function () {
             $(this).dialog({
@@ -61,9 +64,11 @@
         },
         /*dialog close*/
         "dialogclose": function () {
-            obj = $(this);
-            try { obj.dialog("destroy"); } catch (e) { };
-            return obj;
+            if (this != null) {
+                obj = $(this);
+                try { obj.dialog("destroy"); } catch (e) { };
+                return obj;
+            }
         },
         /*設定表單資料*/
         "setfrm": function (obj) {
@@ -99,7 +104,7 @@
             var o = {};
             $(this).find("[name]").each(function (i) {
                 var ths = $(this);
-                if (ths.is(":checkbox, :radio")) { $(o).prop(this.name, $ths.is(":checked")); }
+                if (ths.is(":checkbox, :radio")) { $(o).prop(this.name, ths.is(":checked")); }
                 else if (ths.is(":input")) { $(o).prop(this.name, ths.val()); }
                 else if (ths.is("select")) { $(o).prop(this.name, ths.find(':selected').val()); }
             });
@@ -144,10 +149,14 @@
                 var tb = $("<table/>"), tr = $("<tr/>");
                 /*抬頭處理*/
                 $(obj.th).each(function (i) { tr.append("<th>" + obj.th[i].n + "</th>"); })
-                oo.append(tb.append(tr));                
-                if ($.isEmptyObject(obj.data) || obj.data.length <= 0) {
+                oo.append(tb.append(tr));
+                if (/<[a-z][\s\S]*>/i.test(obj.data)) {
+                    /*如果取得 html 時*/
+                    tb.append("<td colspan='" + obj.th.length + "' style='text-align:center;'>系統已登出，請重新登入</td>");
+                }
+                else if ($.isEmptyObject(obj.data) || obj.data.length <= 0) {
                     /*無資料*/
-                    tb.append("<td colspan='" + obj.th.length + "' class='c red'>無資料</td>");
+                    tb.append("<td colspan='" + obj.th.length + "' style='text-align:center;'>無資料</td>");
                 }
                 else if (!$.isEmptyObject(obj.ths)) {
                     /*分群組*/
@@ -168,12 +177,21 @@
             function settd(i, e, ii, ee, ext) {
                 var td = $("<td/>");
                 /*hidden 放在第一行的資料*/
-                if (ii == 0 && ext.hide.length > 0) {                    
+                if (ii == 0 && ext.hide.length > 0) {
                     $(ext.hide).each(function (gi, ge) {
                         td.append($("<input/>", { "value": e[ge], "type": "hidden", "name": ge }));
                     });
                 }
                 switch (ee.t) {
+                    case "btn":/*按鍵*/
+                        var btn = $("<button/>", { "type": "button" })
+                            .click(function () {
+                                if ($.isFunction(ee.f)) { ee.f(e, btn); }
+                                if (dia != null) { dia.setfrm(e).dialogopen(); }
+                            });
+                        btn.text(ee.n);
+                        td.css("text-align", "center").append(btn);
+                        break;
                     case "num":/*數字加入千分符*/
                         td.css("text-align", "right").append($.tonumonethou(e[ee.v]));
                         break;
@@ -226,7 +244,6 @@ $(window).on("load", function () {
     $.ajaxSetup({ "global": true });
     $(document)
         .ajaxStart(function (e) {
-            if (iscloseblockui) { iscloseblockui = false; return; }
             $.blockUI({
                 cursorReset: "wait",
                 message: '<div><img alt="讀取中…" title="讀取中…" src="/Content/images/loading.gif">讀取中…</div>',

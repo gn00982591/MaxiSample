@@ -14,16 +14,21 @@ button {
     color: #d3d3d3;
     padding: 3px 10px;
     cursor: pointer;
+    margin-left: 3px;
 }
 
-button:hover {
-    color: #ff9c00;
-    border-width: 2px;
-}
+    button:hover {
+        color: #ff9c00;
+        border-width: 2px;
+    }
 
-button:active {
-    border-color: #f6ad39;
-}
+    button:active {
+        border-color: #f6ad39;
+    }
+
+    button i {
+        padding-right: 3px;
+    }
 
 .tabledata {
     padding-top: 10px;
@@ -50,6 +55,33 @@ button:active {
 
     .tabledata .tds {
         background-color: #4d4545;
+    }
+
+.dvupdate {
+    display: none;
+}
+
+    .dvupdate th {
+        padding-right: 10px;
+        padding-left: 13px;
+        text-align: right;
+        background-color: #787575;
+        color: #dedede;
+    }
+
+    .dvupdate th, .dvupdate td {
+        border-bottom: 1px solid #4d4545;
+        padding-top: 10px;
+    }
+
+    .dvupdate div {
+        text-align: center;
+        padding-bottom: 5px;
+        padding-top: 15px;
+    }
+
+    .dvupdate button {
+        background-color: #787575;
     }
 
 .lgoin i {
@@ -105,4 +137,8 @@ button:active {
 
 .c {
     text-align: center;
+}
+
+.none {
+    display: none;
 }

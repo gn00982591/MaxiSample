@@ -3,13 +3,56 @@
     <form id="frmsel">
         股票：<input type="text" id="sname" name="sname" size="25" placeholder="股票名稱、代號" />
         <button type="button" id="cbtnsel"><i class='icon fa fa-search'></i>查詢</button>
+        <button type="button" id="cbtnins"><i class='icon fa fa-plus'></i>新增</button>
     </form>
 </div>
 <div id="tabledata"></div>
+<div id="dvsel" class="dvupdate" title="維護">
+    <form id="frm" name="frm">
+        <input type="hidden" name="cseq" id="cseq" value="0" />
+        <table>
+            <tr>
+                <th>代號</th>
+                <td>
+                    <input name="cno" id="cno" placeholder="代號" size="20" maxlength="50" required />
+                </td>
+            </tr>
+            <tr>
+                <th>名稱</th>
+                <td>
+                    <input name="cname" id="cname" placeholder="名稱" size="20" maxlength="100" required />
+                </td>
+            </tr>
+        </table>
+        <div>
+            <button type="button" id="cbtnsumbit"><i class='icon fa fa-check'></i>確認</button>
+        </div>
+    </form>
+</div>
 @section scripts {
     <script>
+        function setins() {
+            $("#cseq").val(0);
+            $("#frm")[0].reset();
+            dia = $("#dvsel");
+        }
+
         $(window).on("load", function () {
-            $("#cbtnsel").click(function () {
+            $("#sname,#cno,#cname").focusoutupper();
+            /*新增*/
+            $("#cbtnins").click(function () { setins(); dia.dialogopen(); });
+            /*確認*/
+            $("#cbtnsumbit").click(function () {
+                if (!$("#frm").valid()) { return false; }
+                $.post('@Url.Content("~/Stock/Item_I")', $("#frm").serializeobject())
+                    .done(function (q) {
+                        $.alert(q.msg);
+                        $("#cbtnsel").click();
+                        dia.dialogclose();                        
+                    });
+            });
+            /*查詢*/
+            $("#cbtnsel").click(function () {                
                 $("#tabledata").tabledata({
                     "u": '@Url.Content("~/Stock/Item_S")',
                     "p": $("#frmsel").serializeobject(),
@@ -17,9 +60,11 @@
                     "th": [{ "n": "系統號", "v": "cseq" },
                     { "n": "代號", "v": "cno" }, { "n": "名稱", "v": "cname" },
                     { "n": "收", "v": "camount", "t": "num" }, { "n": "計息日", "v": "cinsdt" },
-                    { "n": "目標量", "v": "ctargetqty", "t": "num" }, { "n": "取價日", "v": "cpricedt" }]
+                    { "n": "目標量", "v": "ctargetqty", "t": "num" },
+                    { "n": "修改", "t": "btn", "f": function (e, btn) { setins(); } },
+                    { "n": "取價日", "v": "cpricedt" }]
                 });
-            });
+            }).click();
         });
     </script>
 }
