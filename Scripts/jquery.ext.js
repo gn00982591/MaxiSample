@@ -115,6 +115,7 @@
         資料
             data            [], 資料陣列
             hide            [], 隱藏資料
+            af                 function, table 產生後的 function
             th                [], 抬頭
                 n              string, 表格抬頭文字
                 v              string, 資料的屬性名稱
@@ -131,7 +132,6 @@
         */
         "tabledata": function (obj) {
             var oo = $(this);
-            oo.empty();
             oo.addClass("tabledata");
             /*AJAX*/
             function tdone(d) {
@@ -146,6 +146,8 @@
             else { tin(); }
             /*資料構架*/
             function tin() {
+                oo.empty();
+                /*css*/
                 var tb = $("<table/>"), tr = $("<tr/>");
                 /*抬頭處理*/
                 $(obj.th).each(function (i) { tr.append("<th>" + obj.th[i].n + "</th>"); })
@@ -172,15 +174,21 @@
                         oo.append(tb.append(tr));
                     });
                 }
+                if ($.isFunction(obj.af)) { obj.af(); }
+                oo.parent().removeClass("ui-widget-content");
+                oo.removeClass("ui-widget-content");
             }
             /*td設定*/
+            var bhashide = !$.isEmptyObject(obj.hide);
             function settd(i, e, ii, ee, ext) {
                 var td = $("<td/>");
                 /*hidden 放在第一行的資料*/
-                if (ii == 0 && ext.hide.length > 0) {
-                    $(ext.hide).each(function (gi, ge) {
-                        td.append($("<input/>", { "value": e[ge], "type": "hidden", "name": ge }));
-                    });
+                if (bhashide) {
+                    if (ii == 0 && ext.hide.length > 0) {
+                        $(ext.hide).each(function (gi, ge) {
+                            td.append($("<input/>", { "value": e[ge], "type": "hidden", "name": ge }));
+                        });
+                    }
                 }
                 switch (ee.t) {
                     case "btn":/*按鍵*/
@@ -195,10 +203,20 @@
                     case "num":/*數字加入千分符*/
                         td.css("text-align", "right").append($.tonumonethou(e[ee.v]));
                         break;
+                    case "num-rg":/*數字加入千分符*/
+                        var v = $.tonumone(e[ee.v]);
+                        td.css({
+                            "text-align": "right",
+                            "font-weight": "bolder",
+                            "color": (v > 0 ? "#f93636" : "#1ed076")
+                        })
+                            .append($.tonumonethou(v));
+                        break;
                     default:
                         td.append(e[ee.v]);
                         break;
                 }
+                /*換行換色*/
                 if (i % 2 == 1) { td.addClass("tds"); }
                 return td;
             }

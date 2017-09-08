@@ -1,1 +1,41 @@
 ﻿@*歷史紀錄*@
+<div>
+    <form id="frmsel">
+        股票：<input type="text" id="sname" name="sname" size="25" placeholder="股票名稱、代號" />
+        <button type="button" id="cbtnsel"><i class='icon fa fa-search'></i>查詢</button>
+    </form>
+</div>
+<div id="tabledata"></div>
+<div id="dvsel" class="none tabledata" title="明細">
+</div>
+@section scripts {
+    <script>
+        $(window).on("load", function () {
+            /*查詢*/
+            $("#cbtnsel").click(function () {
+                $("#tabledata").tabledata({
+                    "u": '@Url.Content("~/Stock/HistoricalRecord_S")',
+                    "p": $("#frmsel").serializeobject(),
+                    "hide": ["cseq"],
+                    "th": [{ "n": "結案號", "v": "cseq", "t": "num" },
+                    { "n": "代號", "v": "cno" }, { "n": "名稱", "v": "cname" },
+                    { "n": "損益", "v": "camount", "t": "num-rg" }, { "n": "股票狀態", "v": "cisonline" },
+                    {
+                        "n": "明細", "t": "btn", "f": function (e, btn) {
+                            $("#dvsel").tabledata({
+                                "u": '@Url.Content("~/Stock/HistoricalRecord_S_Detail")',
+                                "p": { "cseq": e.cseq },
+                                "th": [{ "n": "名稱", "v": "ctadingname" },
+                                { "n": "張數", "v": "cqty", "t": "num" }, { "n": "成交價", "v": "camount", "t": "num" },
+                                { "n": "手續費", "v": "cfee", "t": "num" }, { "n": "交易日", "v": "cdtm" },
+                                { "n": "代號", "v": "cno" }, { "n": "名稱", "v": "cname" },
+                                { "n": "結案號", "v": "cseq", "t": "num" }],
+                                "af": function () { $("#dvsel").dialogopen(); }
+                            });
+                        }
+                    }]
+                });
+            }).click();
+        });
+    </script>
+}

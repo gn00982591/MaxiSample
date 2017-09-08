@@ -1,1 +1,28 @@
-﻿
+﻿@*統計*@
+<div>
+    <button type="button" id="cbtnsel"><i class='icon fa fa-search'></i>更新</button>
+</div>
+<div id="tabledata"></div>
+@section scripts {
+    <script>
+        $(window).on("load", function () {
+            /*查詢*/
+            $("#cbtnsel").click(function () {
+                $("#tabledata").tabledata({
+                    "u": '@Url.Content("~/Stock/Future_S")',
+                    "th": [{ "n": "代號", "v": "cno" }, { "n": "名稱", "v": "cname" },
+                        { "n": "獲利率", "v": "per_profit", "t": "num-rg" },
+                        { "n": "損益", "v": "profit", "t": "num-rg" },
+                        { "n": "收價", "v": "Icamount", "t": "num" }, { "n": "成本均價", "v": "avgamount", "t": "num" },
+                        { "n": "餘量", "v": "cqty_p", "t": "num" },
+                        { "n": "成本均價<br />(含零股)", "v": "Icamount", "t": "num" },
+                        { "n": "損益<br />(含零股)", "v": "profit_p", "t": "num" },
+                        { "n": "總成本", "v": "camount", "t": "num" }, { "n": "手續費總額", "v": "cfee", "t": "num" },
+                        { "n": "總賣量", "v": "Scqty", "t": "num" }, { "n": "總賣額", "v": "Scamount", "t": "num" },
+                        { "n": "總買量", "v": "Bcqty", "t": "num" }, { "n": "總買額", "v": "Bcamount", "t": "num" },
+                        { "n": "總除權", "v": "Fcqty", "t": "num" }, { "n": "總除息", "v": "Fcamount", "t": "num" }]
+                });
+            }).click();
+        });
+    </script>
+}
