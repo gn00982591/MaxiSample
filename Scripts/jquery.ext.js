@@ -175,6 +175,7 @@
                     });
                 }
                 if ($.isFunction(obj.af)) { obj.af(); }
+                /*使用alert時，清除不必要的css*/
                 oo.parent().removeClass("ui-widget-content");
                 oo.removeClass("ui-widget-content");
             }
