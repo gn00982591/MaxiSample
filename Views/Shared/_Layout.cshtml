@@ -39,8 +39,31 @@
         $(window).on("load", function () {
             /*取消enter功能*/
             $("input").keydown(function (e) { if (e.which == 13) { e.preventDefault(); } });
-             /*form validate*/
+            /*form validate*/
             $("form").validate();
+            $.post("@Url.Content("~/S/S_Stock")").done(function (d) {
+                if (!d.length) { return; }
+                for (var i in d) {
+                    $.post("@Url.Content("~/S/S_TWSE")", { cno: d[i] }).done(function (q) {
+                        var hq = $(q);
+                        var cno = hq.find("#csvTitle2").text().split(" "),
+                            csv = hq.find("#csvTable2 td");
+                        if (cno.length) {
+                            var indt = csv.eq(5).text().replace(/年|月|日/g, "/");
+                            if (Date.parse(indt)) {
+                                indt = new Date(indt);
+                                indt = $.addition(indt.getFullYear(), 1911) + "/" + $.addition(indt.getMonth(), 1) + "/" + indt.getDate();
+                            } else { indt = null; }
+                            $.post("@Url.Content("~/S/U_Stock")", {
+                                cno: cno[1],
+                                cname: cno[2],
+                                camount: $.division($.addition(csv.eq(0).text(), csv.eq(2).text()), 2),
+                                cinsdt: indt
+                            });
+                        }
+                    });
+                }
+            });
         });
     </script>
 </body>
