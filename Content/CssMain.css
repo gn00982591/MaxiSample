@@ -38,12 +38,13 @@ button {
     .tabledata th {
         color: #000000;
         background-color: #808080;
+        border-bottom: 1px solid #f3f0f0;
     }
 
     .tabledata th, .tabledata td {
-        padding-left: 2px;
-        padding-right: 5px;
-        border: 1px solid #f3f0f0;
+        padding: 7px 5px 2px 2px;
+        border-right: 1px solid #f3f0f0;
+        border-left: 1px solid #f3f0f0;
         white-space: nowrap;
         text-align: left;
     }
@@ -106,6 +107,7 @@ button {
 
 .menu {
     vertical-align: top;
+    white-space: nowrap;
 }
 
     .menu a, a:after {

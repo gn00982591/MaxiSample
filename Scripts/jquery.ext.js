@@ -209,7 +209,7 @@
                         td.css({
                             "text-align": "right",
                             "font-weight": "bolder",
-                            "color": (v > 0 ? "#f93636" : "#1ed076")
+                            "color": (v >= 0 ? "#f93636" : "#1ed076")
                         })
                             .append($.tonumonethou(v));
                         break;
