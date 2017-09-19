@@ -75,16 +75,18 @@
             var tn = "name";
             $(this).find("[" + tn + "]").each(function (i) {
                 var ths = $(this);
-                if (ths.is(":checkbox")) { ths.prop("checked", obj[ths[0][tn]]); }
-                else if (ths.is(":input,select")) { ths.val(obj[ths[0][tn]]); }
-                else if (ths.is("td,span")) { ths.text(obj[$(ths).attr(tn)]); }
+                var va = obj[ths.attr(tn)];
+                if (!$.isEmptyObject(va) || $.isNumeric(va)) {
+                    if (ths.is(":checkbox")) { ths.prop("checked", va); }
+                    else if (ths.is(":input,select")) { ths.val(va); }
+                    else if (ths.is("td,span")) { ths.text(va); }
+                }
             });
             return $(this);
         },
         /*select設定選項*/
         "setsel": function (obj) {
             obj.this = $(this).empty();
-
             function tdone(d) {
                 obj.data = d;
                 obj.first = "";
@@ -256,36 +258,36 @@
 
 /*validator中文*/
 $.extend($.validator.messages, {
-    required: "必填!!!",
-    remote: "資料格式錯誤!!!",
-    email: "電子郵件格式錯誤!!!",
-    url: "網址格式錯誤!!!",
-    date: "日期格式錯誤!!!",
-    dateISO: "日期(ISO)格式錯誤!!!",
-    number: "請輸入數字!!!",
-    digits: "請輸入整數!!!",
-    creditcard: "信用卡號格式錯誤!!!",
-    equalTo: "輸入資料不相同，請重複再輸入一次!!!",
-    accept: "請輸入有效的後綴字串!!!",
-    maxlength: jQuery.validator.format("需小於 {0} 字元的資料內容!!!"),
-    minlength: jQuery.validator.format("需大於 {0} 字元的資料內容!!!"),
-    rangelength: jQuery.validator.format("請輸入長度介於 {0} 的資料內容!!!"),
-    range: jQuery.validator.format("需介於 {0} 與 {1} 之間!!!"),
-    max: jQuery.validator.format("需小於 {0} !!!"),
-    min: jQuery.validator.format("需大於 {0} !!!")
+    required: "VI01：必填!!!",
+    remote: "VI02：資料格式錯誤!!!",
+    email: "VI03：電子郵件格式錯誤!!!",
+    url: "VI04：網址格式錯誤!!!",
+    date: "VI05：日期格式錯誤!!!",
+    dateISO: "VI06：日期(ISO)格式錯誤!!!",
+    number: "VI07：請輸入數字!!!",
+    digits: "VI08：請輸入整數!!!",
+    creditcard: "VI09：信用卡號格式錯誤!!!",
+    equalTo: "VI10：輸入資料不相同，請重複再輸入一次!!!",
+    accept: "VI11：請輸入有效的後綴字串!!!",
+    maxlength: jQuery.validator.format("VI12：需小於 {0} 字元的資料內容!!!"),
+    minlength: jQuery.validator.format("VI13：需大於 {0} 字元的資料內容!!!"),
+    rangelength: jQuery.validator.format("VI14：請輸入長度介於 {0} 的資料內容!!!"),
+    range: jQuery.validator.format("VI15：需介於 {0} 與 {1} 之間!!!"),
+    max: jQuery.validator.format("VI16：需小於 {0} !!!"),
+    min: jQuery.validator.format("VI17：需大於 {0} !!!")
 });
 $.validator.addMethod("endate", function (value, element) {
     var str = $.trim(value).replace(/-|\//g, "");
-    return /([0-9]{4})((0[1-9])|(1[0-2]))((0[1-9])|([1-2][0-9])|(3[0-1]))/.test(str) && Date.parse(str);
-}, "IX0019：日期格式錯誤!!!!");
+    return /*/([0-9]{4})((0[1-9])|(1[0-2]))((0[1-9])|([1-2][0-9])|(3[0-1]))/.test(str) &&*/ Date.parse($.trim(value));
+}, "VX01：日期格式錯誤!!!!");
 $.validator.addMethod("ennum", function (value, element) { return this.optional(element) || /^[0-9]+$/.test(value); },
-    "IX0021：請輸入數字!!!!");
+    "VX02：請輸入數字!!!!");
 $.validator.addMethod("enstring", function (value, element) { return this.optional(element) || /^[A-Za-z0-9]+$/.test(value); },
-    "IX0021：請輸入英文字母或數字!!!!");
+    "VX03：請輸入英文字母或數字!!!!");
 $.validator.addMethod("ennumstring", function (value, element) { return this.optional(element) || /^(\d*\D*)/.test(value); },
-    "IX0022：請輸入英文字母或數字!!!!");
+    "VX04：請輸入英文字母或數字!!!!");
 $.validator.addMethod("enselected", function (value, element) { return $.trim($(element).find(":selected").val()) != ""; },
-    "IX0023：請選擇資料!!!!");
+    "VX05：請選擇資料!!!!");
 
 $(window).on("load", function () {
     /*ajax 全域設定*/

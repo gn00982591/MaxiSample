@@ -32,29 +32,32 @@
             <tr>
                 <th>股數</th>
                 <td>
-                    <input type="text" class="number" name="cqty" value="0" placeholder="股數" />
+                    <input type="text" class="r number" name="cqty" value="0" size="10" placeholder="股數" />
                 </td>
             </tr>
             <tr>
                 <th>成交價</th>
                 <td>
-                    <input type="text" class="number" name="camount" value="0" placeholder="成交價" />
+                    <input type="text" class="r number" name="camount" value="0" size="10" placeholder="成交價" />
                 </td>
             </tr>
             <tr>
                 <th>手續費</th>
-                <td name="cfee"></td>
+                <td id="tdcfee" class="r "></td>
             </tr>
             <tr>
                 <th>交易日</th>
                 <td>
-                    <input type="text" class="endate" name="cdtm" placeholder="交易日" />
+                    <input type="text" class="endate" name="cdtm" placeholder="交易日" value='@(DateTime.Now.ToDate())' />
                 </td>
             </tr>
         </table>
         <div>
-            <button type="button" id="cbtnchki"><i class='icon fa fa-check'></i>檢核</button>
-            <button type="button" id="cbtnsumbiti" disabled="disabled"><i class='icon fa fa-check'></i>確認</button>
+            <input type="checkbox" id="chkins" />
+            <label for="chkins">送出交易否</label>
+        </div>
+        <div>
+            <button type="button" id="cbtnchki"><i class='icon fa fa-check'></i>確認</button>
         </div>
     </form>
 </div>
@@ -104,13 +107,30 @@
                         dia.dialogclose();
                     });
             });
-            /*交易-檢核*/
-            $("#cbtnchki").click(function () {
-                if (!$("#frmi").valid()) { return false; }
+            /*交易-送出交易否*/
+            $("#chkins").change(function () {
+                if ($("#chkins").prop("checked")) {
+                    $("#frmi input[type=text],#frmi select").attr("disabled", "disabled");
+                } else {
+                    $("#frmi input[type=text],#frmi select").removeAttr("disabled");
+                }
             });
             /*交易-確認*/
-            $("#cbtnsumbiti").click(function () {
+            $("#cbtnchki").click(function () {
                 if (!$("#frmi").valid()) { return false; }
+                $.post('@Url.Content("~/Stock/Transaction_C")', $("#frmi").serializeobject())
+                    .done(function (q) {
+                        if (q.msg != "") { $.alert(q.msg); }
+                        if (q.ok) {
+                            if ($("#chkins").prop("checked")) {
+
+                            } else {
+                                $("#cfee").val(q.data.fee);
+                                $("#tdcfee").text(q.data.fee);
+                                $("#chkins").attr("checked", "checked");
+                            }
+                        }
+                    });
             });
             /*查詢*/
             $("#cbtnsel").click(function () {
