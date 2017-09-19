@@ -2,11 +2,62 @@
 <div>
     <form id="frmsel">
         股票：<input type="text" id="sname" name="sname" size="25" placeholder="股票名稱、代號" />
+        <input type="checkbox" id="cisonline" name="cisonline" checked="checked" /><label for="cisonline">不含下市股票</label>
         <button type="button" id="cbtnsel"><i class='icon fa fa-search'></i>查詢</button>
         <button type="button" id="cbtnins"><i class='icon fa fa-plus'></i>新增</button>
     </form>
 </div>
 <div id="tabledata"></div>
+<div id="dvdetail" class="none tabledata" title="餘量明細">
+</div>
+<div id="dvi" class="dvupdate" title="交易">
+    <form id="frmi" name="frmi">
+        <input type="hidden" name="cseq" id="cseq" value="0" />
+        <input type="hidden" name="cfee" id="cfee" value="0" />
+        <table>
+            <tr>
+                <th>代號</th>
+                <td name="cno"></td>
+            </tr>
+            <tr>
+                <th>名稱</th>
+                <td name="cname"></td>
+            </tr>
+            <tr>
+                <th>交易類型</th>
+                <td>
+                    <select name="ctadingtype" id="ctadingtype" class="enselected"></select>
+                </td>
+            </tr>
+            <tr>
+                <th>股數</th>
+                <td>
+                    <input type="text" class="number" name="cqty" value="0" placeholder="股數" />
+                </td>
+            </tr>
+            <tr>
+                <th>成交價</th>
+                <td>
+                    <input type="text" class="number" name="camount" value="0" placeholder="成交價" />
+                </td>
+            </tr>
+            <tr>
+                <th>手續費</th>
+                <td name="cfee"></td>
+            </tr>
+            <tr>
+                <th>交易日</th>
+                <td>
+                    <input type="text" class="endate" name="cdtm" placeholder="交易日" />
+                </td>
+            </tr>
+        </table>
+        <div>
+            <button type="button" id="cbtnchki"><i class='icon fa fa-check'></i>檢核</button>
+            <button type="button" id="cbtnsumbiti" disabled="disabled"><i class='icon fa fa-check'></i>確認</button>
+        </div>
+    </form>
+</div>
 <div id="dvsel" class="dvupdate" title="維護">
     <form id="frm" name="frm">
         <input type="hidden" name="cseq" id="cseq" value="0" />
@@ -39,29 +90,61 @@
 
         $(window).on("load", function () {
             $("#sname,#cno,#cname").focusoutupper();
-            /*新增*/
+            /*維護-新增*/
             $("#cbtnins").click(function () { setins(); dia.dialogopen(); });
-            /*確認*/
+            /*交易類型*/
+            $("#ctadingtype").setsel({ "t": 2, "p": 4, "u": '@Url.Content("~/S/S_Code")', });
+            /*維護-確認*/
             $("#cbtnsumbit").click(function () {
                 if (!$("#frm").valid()) { return false; }
                 $.post('@Url.Content("~/Stock/Item_I")', $("#frm").serializeobject())
                     .done(function (q) {
                         $.alert(q.msg);
                         $("#cbtnsel").click();
-                        dia.dialogclose();                        
+                        dia.dialogclose();
                     });
             });
+            /*交易-檢核*/
+            $("#cbtnchki").click(function () {
+                if (!$("#frmi").valid()) { return false; }
+            });
+            /*交易-確認*/
+            $("#cbtnsumbiti").click(function () {
+                if (!$("#frmi").valid()) { return false; }
+            });
             /*查詢*/
-            $("#cbtnsel").click(function () {                
+            $("#cbtnsel").click(function () {
                 $("#tabledata").tabledata({
                     "u": '@Url.Content("~/Stock/Item_S")',
                     "p": $("#frmsel").serializeobject(),
                     "hide": ["cseq"],
-                    "th": [{ "n": "系統號", "v": "cseq", "t": "num"  },
+                    "th": [{ "n": "系統號", "v": "cseq", "t": "num" },
                     { "n": "代號", "v": "cno" }, { "n": "名稱", "v": "cname" },
-                    { "n": "收", "v": "camount", "t": "num" }, { "n": "計息日", "v": "cinsdt" },
-                    { "n": "目標量", "v": "ctargetqty", "t": "num" },
+                    { "n": "收", "v": "camount", "t": "num" }, {
+                        "n": "交易", "t": "btn", "f": function (e, btn) {
+                            $("#cseq").val(0);
+                            $("#frmi")[0].reset();
+                            dia = $("#dvi");
+                        }
+                    },
+                    { "n": "計息日", "v": "cinsdt" }, { "n": "目標量", "v": "ctargetqty", "t": "num" },
+                    { "n": "目標否", "v": "cistargetname" }, { "n": "狀態", "v": "cisonlinename" },
                     { "n": "修改", "t": "btn", "f": function (e, btn) { setins(); } },
+                    {
+                        "n": "明細", "t": "btn", "f": function (e, btn) {
+                            dia = $("#dvdetail");
+                            $("#dvdetail").tabledata({
+                                "u": '@Url.Content("~/Stock/Future_S_Detail")',
+                                "p": { "cseq": e.cseq },
+                                "th": [{ "n": "名稱", "v": "ctadingname" },
+                                { "n": "股數", "v": "cqty", "t": "num" }, { "n": "成交價", "v": "camount", "t": "num" },
+                                { "n": "手續費", "v": "cfee", "t": "num" }, { "n": "交易日", "v": "cdtm" },
+                                { "n": "代號", "v": "cno" }, { "n": "名稱", "v": "cname" },
+                                { "n": "交易碼", "v": "cseq", "t": "num" }],
+                                "af": function () { $("#dvdetail").dialogopen(); }
+                            });
+                        }
+                    },
                     { "n": "取價日", "v": "cpricedt" }]
                 });
             }).click();

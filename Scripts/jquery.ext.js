@@ -81,6 +81,33 @@
             });
             return $(this);
         },
+        /*select設定選項*/
+        "setsel": function (obj) {
+            obj.this = $(this).empty();
+
+            function tdone(d) {
+                obj.data = d;
+                obj.first = "";
+                switch (obj.t) {
+                    case 1: obj.first = "全部"; break;
+                    case 2: obj.first = "請選擇…"; break;
+                }
+                if (obj.first != "") { obj.this.append("<option value=''>" + obj.first + "</option>"); }
+                if (!$.isEmptyObject(d) && d.length > 0) {
+                    $(d).each(function (i, e) {
+                        if (e.ckey == e.cdesc) { obj.this.append("<option value='" + e.ckey + "'>" + e.cdesc + "</option>"); }
+                        else { obj.this.append("<option value='" + e.ckey + "'>" + e.cdesc + "(" + e.ckey + ")</option>"); }
+                    });
+                }
+                obj.this.find("option:eq(0)").attr("selected", "selected");
+            }
+            /*ajax*/
+            if (!$.isEmptyObject(obj.u)) {
+                if ($.isNumeric(obj.p)) { $.post(obj.u, { "cseq": obj.p }).done(function (d) { tdone(d); }); }
+                else { $.post(obj.u).done(function (d) { tdone(d); }); }
+            }
+            return obj.this;
+        },
         /*清除元件的val()的空白*/
         "totrim": function () { return this.each(function () { var t = $(this); t.val($.trim(t.val())); }); },
         /*輸入時檢核訊息處理*/
@@ -214,7 +241,9 @@
                             .append($.tonumonethou(v));
                         break;
                     default:
-                        td.append(e[ee.v]);
+                        var val = e[ee.v];
+                        if (!$.isEmptyObject(val) && val.length == 1) { td.css("text-align", "center") }
+                        td.append(val);
                         break;
                 }
                 /*換行換色*/
@@ -248,15 +277,15 @@ $.extend($.validator.messages, {
 $.validator.addMethod("endate", function (value, element) {
     var str = $.trim(value).replace(/-|\//g, "");
     return /([0-9]{4})((0[1-9])|(1[0-2]))((0[1-9])|([1-2][0-9])|(3[0-1]))/.test(str) && Date.parse(str);
-}, "IX0019：日期格式錯誤!!!");
+}, "IX0019：日期格式錯誤!!!!");
 $.validator.addMethod("ennum", function (value, element) { return this.optional(element) || /^[0-9]+$/.test(value); },
-    "IX0021：請輸入數字!!!");
+    "IX0021：請輸入數字!!!!");
 $.validator.addMethod("enstring", function (value, element) { return this.optional(element) || /^[A-Za-z0-9]+$/.test(value); },
-    "IX0021：請輸入英文字母或數字!!!");
+    "IX0021：請輸入英文字母或數字!!!!");
 $.validator.addMethod("ennumstring", function (value, element) { return this.optional(element) || /^(\d*\D*)/.test(value); },
-    "IX0022：請輸入英文字母或數字!!!");
+    "IX0022：請輸入英文字母或數字!!!!");
 $.validator.addMethod("enselected", function (value, element) { return $.trim($(element).find(":selected").val()) != ""; },
-    "IX0023：請選擇資料!!!");
+    "IX0023：請選擇資料!!!!");
 
 $(window).on("load", function () {
     /*ajax 全域設定*/

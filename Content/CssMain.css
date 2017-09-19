@@ -8,6 +8,10 @@ table {
     border-collapse: collapse;
 }
 
+label, input[type=checkbox] {
+    cursor: pointer;
+}
+
 button {
     border: 1px solid #ffffff;
     background-color: #000000;
@@ -21,6 +25,15 @@ button {
         color: #ff9c00;
         border-width: 2px;
     }
+
+    button:disabled {
+        color: #4d4545;
+        background-color: #4d4545;
+    }
+
+        button:disabled:hover {
+            color: #4d4545;
+        }
 
     button:active {
         border-color: #f6ad39;
