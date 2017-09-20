@@ -12,7 +12,7 @@
 </div>
 <div id="dvi" class="dvupdate" title="交易">
     <form id="frmi" name="frmi">
-        <input type="hidden" name="cseq" id="cseq" value="0" />
+        <input type="hidden" name="cseq" value="0" />
         <input type="hidden" name="cfee" id="cfee" value="0" />
         <table>
             <tr>
@@ -59,6 +59,9 @@
         <div>
             <button type="button" id="cbtnchki"><i class='icon fa fa-check'></i>確認</button>
         </div>
+        ◆ 「除息」新增時會自動清「股數」為零。
+        <br />
+        ◆ 「除權」新增時會自動法「成交價」為零。
     </form>
 </div>
 <div id="dvsel" class="dvupdate" title="維護">
@@ -113,6 +116,8 @@
                     $("#frmi input[type=text],#frmi select").attr("disabled", "disabled");
                 } else {
                     $("#frmi input[type=text],#frmi select").removeAttr("disabled");
+                    $("#tdcfee").text("");
+                    $("#cseq").val(0);
                 }
             });
             /*交易-確認*/
@@ -123,7 +128,11 @@
                         if (q.msg != "") { $.alert(q.msg); }
                         if (q.ok) {
                             if ($("#chkins").prop("checked")) {
-
+                                $.post('@Url.Content("~/Stock/Transaction_I")', $("#frmi").serializeobject())
+                                    .done(function (q) {
+                                        dia.dialogclose();
+                                        $.alert(q.msg);
+                                    });
                             } else {
                                 $("#cfee").val(q.data.fee);
                                 $("#tdcfee").text(q.data.fee);
@@ -142,8 +151,9 @@
                     { "n": "代號", "v": "cno" }, { "n": "名稱", "v": "cname" },
                     { "n": "收", "v": "camount", "t": "num" }, {
                         "n": "交易", "t": "btn", "f": function (e, btn) {
-                            $("#cseq").val(0);
                             $("#frmi")[0].reset();
+                            $("#chkins").removeAttr("checked");
+                            $("#chkins").change();
                             dia = $("#dvi");
                         }
                     },
