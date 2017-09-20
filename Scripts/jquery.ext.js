@@ -242,6 +242,38 @@
                         })
                             .append($.tonumonethou(v));
                         break;
+                    case "btn-del":/*按鍵，針對單筆刪除設計*/
+                        var btn = $("<button/>")
+                            .click(function () {
+                                var str = "dvdelpop";
+                                $("#" + str).remove();
+                                var tabledata = $("<div/>");
+                                tabledata.tabledata({
+                                    "th": $.grep(obj.th, function (a) { return $.inArray(a.t, ["btn", "btn-del"]) < 0; }),
+                                    "data": [e]
+                                })
+                                var dv = $("<div/>", { "id": str, "class": "none tabledata", "title": "刪除確認." })
+                                    .append("資料一旦刪除便無法回復。", "是否確定刪除？")
+                                    .append(tabledata)
+                                    .append($("<div/>", { "class": "c" }).append($("<button/>").append("確定").click(function () {
+                                        if (!$.isEmptyObject(ee.u) && !$.isEmptyObject(ee.p)) {
+                                            var eepost = {};
+                                            for (var pp in ee.p) { $(eepost).prop(ee.p[pp], e[ee.p[pp]]); }
+                                            $.post(ee.u, eepost).done(function (q) {
+                                                if (!$.isEmptyObject(q)) { $.alert(q.msg); }
+                                                dv.dialogclose().remove();
+                                                if ($.isFunction(ee.f)) { ee.f(e); }
+                                            });
+                                        }
+                                    }))
+                                        .append($("<button/>").append("取消").click(function () { dv.dialogclose(); $("#" + str).remove(); }))
+                                    );
+                                $(document.body).append(dv);
+                                dv.dialogopen();
+                            });
+                        btn.text(ee.n);
+                        td.append(btn);
+                        break;
                     default:
                         var val = e[ee.v];
                         if (!$.isEmptyObject(val) && val.length == 1) { td.css("text-align", "center") }

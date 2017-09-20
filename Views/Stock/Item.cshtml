@@ -96,10 +96,9 @@
 
         $(window).on("load", function () {
             $("#sname,#cno,#cname").focusoutupper();
+            /*維護----------------------------------------------------------------------------------*/
             /*維護-新增*/
             $("#cbtnins").click(function () { setins(); dia.dialogopen(); });
-            /*交易類型*/
-            $("#ctadingtype").setsel({ "t": 2, "p": 4, "u": '@Url.Content("~/S/S_Code")', });
             /*維護-確認*/
             $("#cbtnsumbit").click(function () {
                 if (!$("#frm").valid()) { return false; }
@@ -110,6 +109,48 @@
                         dia.dialogclose();
                     });
             });
+            /*查詢*/
+            $("#cbtnsel").click(function () {
+                $("#tabledata").tabledata({
+                    "u": '@Url.Content("~/Stock/Item_S")',
+                    "p": $("#frmsel").serializeobject(),
+                    "hide": ["cseq"],
+                    "th": [{ "n": "系統號", "v": "cseq", "t": "num" },
+                    { "n": "代號", "v": "cno" }, { "n": "名稱", "v": "cname" },
+                    { "n": "收", "v": "camount", "t": "num" }, { "n": "計息日", "v": "cinsdt" }, {
+                        "n": "交易", "t": "btn", "f": function (e, btn) {
+                            $("#frmi")[0].reset();
+                            $("#chkins").removeAttr("checked");
+                            $("#chkins").change();
+                            dia = $("#dvi");
+                        }
+                    }, {
+                        "n": "明細", "t": "btn", "f": function (e, btn) {
+                            dia = $("#dvdetail");
+                            $("#dvdetail").tabledata({
+                                "u": '@Url.Content("~/Stock/Future_S_Detail")',
+                                "p": { "cseq": e.cseq },
+                                "th": [{ "n": "名稱", "v": "ctadingname" },
+                                { "n": "股數", "v": "cqty", "t": "num" }, { "n": "成交價", "v": "camount", "t": "num" },
+                                { "n": "手續費", "v": "cfee", "t": "num" }, { "n": "交易日", "v": "cdtm" },
+                                { "n": "代號", "v": "cno" }, { "n": "名稱", "v": "cname" },
+                                { "n": "交易碼", "v": "cseq", "t": "num" }, {
+                                    "n": "刪除", "t": "btn-del", "p": ["cseq"],
+                                    "u": '@Url.Content("~/Stock/Transaction_D")'
+                                }],
+                                "af": function () { $("#dvdetail").dialogopen(); }
+                            });
+                        }
+                    },
+                    { "n": "取價日", "v": "cpricedt" }, { "n": "目標量", "v": "ctargetqty", "t": "num" },
+                    { "n": "目標否", "v": "cistargetname" }, { "n": "狀態", "v": "cisonlinename" },
+                    { "n": "修改", "t": "btn", "f": function (e, btn) { setins(); } }]
+                });
+            }).click();
+
+            /*交易----------------------------------------------------------------------------------*/
+            /*交易類型*/
+            $("#ctadingtype").setsel({ "t": 2, "p": 4, "u": '@Url.Content("~/S/S_Code")', });
             /*交易-送出交易否*/
             $("#chkins").change(function () {
                 if ($("#chkins").prop("checked")) {
@@ -141,43 +182,6 @@
                         }
                     });
             });
-            /*查詢*/
-            $("#cbtnsel").click(function () {
-                $("#tabledata").tabledata({
-                    "u": '@Url.Content("~/Stock/Item_S")',
-                    "p": $("#frmsel").serializeobject(),
-                    "hide": ["cseq"],
-                    "th": [{ "n": "系統號", "v": "cseq", "t": "num" },
-                    { "n": "代號", "v": "cno" }, { "n": "名稱", "v": "cname" },
-                    { "n": "收", "v": "camount", "t": "num" }, {
-                        "n": "交易", "t": "btn", "f": function (e, btn) {
-                            $("#frmi")[0].reset();
-                            $("#chkins").removeAttr("checked");
-                            $("#chkins").change();
-                            dia = $("#dvi");
-                        }
-                    },
-                    { "n": "計息日", "v": "cinsdt" }, { "n": "目標量", "v": "ctargetqty", "t": "num" },
-                    { "n": "目標否", "v": "cistargetname" }, { "n": "狀態", "v": "cisonlinename" },
-                    { "n": "修改", "t": "btn", "f": function (e, btn) { setins(); } },
-                    {
-                        "n": "明細", "t": "btn", "f": function (e, btn) {
-                            dia = $("#dvdetail");
-                            $("#dvdetail").tabledata({
-                                "u": '@Url.Content("~/Stock/Future_S_Detail")',
-                                "p": { "cseq": e.cseq },
-                                "th": [{ "n": "名稱", "v": "ctadingname" },
-                                { "n": "股數", "v": "cqty", "t": "num" }, { "n": "成交價", "v": "camount", "t": "num" },
-                                { "n": "手續費", "v": "cfee", "t": "num" }, { "n": "交易日", "v": "cdtm" },
-                                { "n": "代號", "v": "cno" }, { "n": "名稱", "v": "cname" },
-                                { "n": "交易碼", "v": "cseq", "t": "num" }],
-                                "af": function () { $("#dvdetail").dialogopen(); }
-                            });
-                        }
-                    },
-                    { "n": "取價日", "v": "cpricedt" }]
-                });
-            }).click();
         });
     </script>
 }
