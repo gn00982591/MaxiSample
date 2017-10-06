@@ -1,0 +1,89 @@
+﻿@*Bank*@
+<div>
+    <button type="button" id="cbtnins"><i class='icon fa fa-plus'></i>新增</button>
+</div>
+<div id="tabledata"></div>
+<div id="dvsel" class="dvupdate" title="維護">
+    <form id="frm" name="frm">
+        <input type="hidden" name="cseq" id="cseq" value="0" />
+        <table>
+            <tr>
+                <th>名稱</th>
+                <td>
+                    <input name="cname" id="cname" placeholder="名稱" size="20" maxlength="50" required />
+                </td>
+            </tr>
+            <tr>
+                <th>分類</th>
+                <td>
+                    <select name="ctype" id="ctype" class="enselected"></select>
+                </td>
+            </tr>
+            <tr>
+                <th>金額</th>
+                <td>
+                    <input name="camount" id="camount" placeholder="金額" size="20" required class="r number" />
+                </td>
+            </tr>
+            <tr>
+                <th>到期日</th>
+                <td>
+                    <input name="cenddt" id="cenddt" placeholder="到期日, 格式：2017-03-01" size="20" maxlength="100"  class="endate" />
+                </td>
+            </tr>
+            <tr>
+                <th>描述</th>
+                <td>
+                    <input name="cdescq" id="cdescq" placeholder="描述" size="20" maxlength="100" />
+                </td>
+            </tr>
+        </table>
+        <div>
+            <button type="button" id="cbtnsumbit"><i class='icon fa fa-check'></i>確認</button>
+        </div>
+    </form>
+</div>
+@section scripts {
+    <script>
+        function getData() {
+            $("#tabledata").tabledata({
+                "u": '@Url.Content("~/Bank/Bank_S")',
+                "hide": ["cseq"],
+                "th": [{ "n": "名稱", "v": "cname" }, { "n": "分類", "v": "ctypename" },
+                { "n": "金額", "v": "camount", "t": "num" }, { "n": "手上現金", "v": "totalamount", "t": "num" },
+                { "n": "佔比", "v": "per", "t": "num" }, { "n": "描述", "v": "cdescq" },
+                { "n": "系統號", "v": "cseq", "t": "num" },
+                { "n": "修改", "t": "btn", "f": function (e, btn) { setins(); } }, {
+                    "n": "刪除", "t": "btn-del", "p": ["cseq"],
+                    "u": '@Url.Content("~/Bank/Bank_D")'
+                }]
+            });
+        }
+
+        function setins() {
+            $("#cseq").val(0);
+            $("#frm")[0].reset();
+            dia = $("#dvsel");
+        }
+
+        $(window).on("load", function () {
+            getData();
+            /*分類*/
+            $("#ctype").setsel({ "t": 2, "p": 20, "u": '@Url.Content("~/S/S_Code")', });
+            /*維護-新增*/
+            $("#cbtnins").click(function () { setins(); dia = $("#dvsel").dialogopen(); });
+            /*維護-確認*/
+            $("#cbtnsumbit").click(function () {
+                if (!$("#frm").valid()) { return false; }
+                $.post('@Url.Content("~/Bank/Bank_I")', $("#frm").serializeobject())
+                    .done(function (q) {
+                        getData();
+                        $.alert(q.msg);
+                        $("#cbtnsel").click();
+                        dia.dialogclose();
+                    });
+            });
+
+        });
+    </script>
+}

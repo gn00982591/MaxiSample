@@ -9,6 +9,7 @@
         <EntityTypeShape EntityType="mdDB.Stock_D_Transaction" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="mdDB.Stock_M_Item" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="mdDB.SYS_M_Code" Width="1.5" PointX="0.75" PointY="4.75" />
+        <EntityTypeShape EntityType="mdDB.Bank_M" Width="1.5" PointX="2.75" PointY="4.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

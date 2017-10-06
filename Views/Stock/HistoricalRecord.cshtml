@@ -17,8 +17,7 @@
                     "u": '@Url.Content("~/Stock/HistoricalRecord_S")',
                     "p": $("#frmsel").serializeobject(),
                     "hide": ["cseq"],
-                    "th": [{ "n": "結案號", "v": "cseq", "t": "num" },
-                    { "n": "代號", "v": "cno" }, { "n": "名稱", "v": "cname" },
+                    "th": [{ "n": "代號", "v": "cno" }, { "n": "名稱", "v": "cname" },
                     { "n": "獲利率", "v": "percamount", "t": "num-rg" }, { "n": "損益", "v": "camount", "t": "num-rg" },
                     { "n": "股票狀態", "v": "cisonline" },
                     { "n": "賣出日", "v": "sdt" }, { "n": "買入日", "v": "bdt" },
@@ -35,7 +34,7 @@
                                 "af": function () { $("#dvsel").dialogopen(); }
                             });
                         }
-                    }]
+                    }, { "n": "結案號", "v": "cseq", "t": "num" }]
                 });
             }).click();
         });

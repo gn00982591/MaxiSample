@@ -73,14 +73,13 @@
         /*設定表單資料*/
         "setfrm": function (obj) {
             var tn = "name";
+            if ($(this).is("form")) { $(this)[0].reset(); }
             $(this).find("[" + tn + "]").each(function (i) {
                 var ths = $(this);
                 var va = obj[ths.attr(tn)];
-                if (!$.isEmptyObject(va) || $.isNumeric(va)) {
-                    if (ths.is(":checkbox")) { ths.prop("checked", va); }
-                    else if (ths.is(":input,select")) { ths.val(va); }
-                    else if (ths.is("td,span")) { ths.text(va); }
-                }
+                if (ths.is(":checkbox")) { ths.prop("checked", va); }
+                else if (ths.is(":input,select")) { ths.val(va); }
+                else if (ths.is("td,span")) { ths.text(va); }
             });
             return $(this);
         },
@@ -88,7 +87,7 @@
         "setsel": function (obj) {
             obj.this = $(this).empty();
             function tdone(d) {
-                obj.data = d;
+                if (!$.isEmptyObject(d)) { obj.data = d; }
                 obj.first = "";
                 switch (obj.t) {
                     case 1: obj.first = "全部"; break;
@@ -96,7 +95,7 @@
                 }
                 if (obj.first != "") { obj.this.append("<option value=''>" + obj.first + "</option>"); }
                 if (!$.isEmptyObject(d) && d.length > 0) {
-                    $(d).each(function (i, e) {
+                    $(obj.data).each(function (i, e) {
                         if (e.ckey == e.cdesc) { obj.this.append("<option value='" + e.ckey + "'>" + e.cdesc + "</option>"); }
                         else { obj.this.append("<option value='" + e.ckey + "'>" + e.cdesc + "(" + e.ckey + ")</option>"); }
                     });
@@ -107,7 +106,7 @@
             if (!$.isEmptyObject(obj.u)) {
                 if ($.isNumeric(obj.p)) { $.post(obj.u, { "cseq": obj.p }).done(function (d) { tdone(d); }); }
                 else { $.post(obj.u).done(function (d) { tdone(d); }); }
-            }
+            } else { tdone(); }
             return obj.this;
         },
         /*清除元件的val()的空白*/

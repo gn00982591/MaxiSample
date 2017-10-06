@@ -80,6 +80,12 @@
                     <input name="cname" id="cname" placeholder="名稱" size="20" maxlength="100" required />
                 </td>
             </tr>
+            <tr>
+                <th>目標否</th>
+                <td>
+                    <input type="checkbox" name="cistarget" id="cistarget" />
+                </td>
+            </tr>
         </table>
         <div>
             <button type="button" id="cbtnsumbit"><i class='icon fa fa-check'></i>確認</button>
@@ -115,8 +121,7 @@
                     "u": '@Url.Content("~/Stock/Item_S")',
                     "p": $("#frmsel").serializeobject(),
                     "hide": ["cseq"],
-                    "th": [{ "n": "系統號", "v": "cseq", "t": "num" },
-                    { "n": "代號", "v": "cno" }, { "n": "名稱", "v": "cname" },
+                    "th": [{ "n": "代號", "v": "cno" }, { "n": "名稱", "v": "cname" },
                     { "n": "收", "v": "camount", "t": "num" }, { "n": "計息日", "v": "cinsdt" }, {
                         "n": "交易", "t": "btn", "f": function (e, btn) {
                             $("#frmi")[0].reset();
@@ -143,8 +148,9 @@
                         }
                     },
                     { "n": "取價日", "v": "cpricedt" }, { "n": "目標量", "v": "ctargetqty", "t": "num" },
-                    { "n": "目標否", "v": "cistargetname" }, { "n": "狀態", "v": "cisonlinename" },
-                    { "n": "修改", "t": "btn", "f": function (e, btn) { setins(); } }]
+                    { "n": "目標否", "v": "cistargetname" },
+                    { "n": "修改", "t": "btn", "f": function (e, btn) { setins(); } },
+                    { "n": "狀態", "v": "cisonlinename" }, { "n": "系統號", "v": "cseq", "t": "num" }]
                 });
             }).click();
 
