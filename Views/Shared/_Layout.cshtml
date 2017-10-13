@@ -62,15 +62,22 @@
             $("input").keydown(function (e) { if (e.which == 13) { e.preventDefault(); } });
             /*form validate*/
             $("form").validate();
-            $.post("@Url.Content("~/S/S_StockTarget")").done(function (d) {
-                if (!d.length) { return; }
-                for (var i in d) { ustock(d[i]); }
-            });
-            $.post("@Url.Content("~/S/S_StockOnhand")").done(function (d) {
-                if (!d.length) { return; }
-                for (var i in d) { ustock(d[i]); }
-            });
         });
     </script>
+    @if (CsPublicFunc.getSHA512(CsProp.OAuth._Maxi) == UnoSession.Session[CsProp.Session._UserId].ToString())
+    {
+        <script>
+            $(window).on("load", function () {
+                $.post("@Url.Content("~/S/S_StockTarget")").done(function (d) {
+                    if (!d.length) { return; }
+                    for (var i in d) { ustock(d[i]); }
+                });
+                $.post("@Url.Content("~/S/S_StockOnhand")").done(function (d) {
+                    if (!d.length) { return; }
+                    for (var i in d) { ustock(d[i]); }
+                });
+            });
+        </script>
+    }
 </body>
 </html>
